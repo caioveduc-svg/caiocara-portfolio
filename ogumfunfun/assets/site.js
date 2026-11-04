@@ -10,24 +10,9 @@
     window.dataLayer.push({ event });
   };
   const params = new URLSearchParams(location.search);
-  const identifyOrigin = () => {
-    const medium = (params.get('utm_medium') || '').slice(0, 60);
-    const source = (params.get('utm_source') || '').slice(0, 80);
-    let ref = '';
-    try { ref = document.referrer ? new URL(document.referrer).hostname : ''; } catch {}
-    if (source) return { channel: /cpc|paid|social_paid/.test(medium) ? 'midia-paga' : 'utm', source, medium };
-    if (params.has('gclid') || params.has('fbclid')) return { channel: 'referencia-com-identificador', source: params.has('gclid') ? 'google' : 'meta' };
-    if (/chatgpt|perplexity|claude\.ai|copilot\.microsoft/.test(ref)) return { channel: 'ia-referenciada', source: ref };
-    if (/(^|\.)(google\.|bing\.|duckduckgo\.)/.test(ref)) return { channel: 'busca-organica', source: ref };
-    if (ref && ref !== location.hostname) return { channel: 'referencia', source: ref };
-    return { channel: 'direto-ou-desconhecido', source: 'nao-identificada' };
-  };
-  const oldOrigin = safeGet('of-origin');
-  const observed = identifyOrigin();
-  const meaningful = observed.channel !== 'direto-ou-desconhecido';
-  const origin = oldOrigin || { first: observed, last: observed, landing: location.pathname };
-  if (oldOrigin && meaningful) origin.last = observed;
-  safeSet('of-origin', origin);
+  const attribution = window.OgumAttribution;
+  const origin = attribution?.remember(safeGet('of-origin-v2'), attribution.identify({ href: location.href, referrer: document.referrer }), location.pathname);
+  if (origin) safeSet('of-origin-v2', origin);
 
   const menu = $('[data-menu]');
   const toggle = $('[data-menu-toggle]');
@@ -85,7 +70,10 @@
     update();
   });
 
-  $$('[data-track-whatsapp]').forEach(a => a.addEventListener('click', () => track('whatsapp_click')));
+  $$('a[href^="https://wa.me/"]').forEach(a => {
+    if (attribution) a.href = attribution.decorate(a.href, origin, location.pathname);
+    a.addEventListener('click', () => track('whatsapp_click'));
+  });
   $$('[data-privacy-open]').forEach(button => button.addEventListener('click', () => {
     const panel = $('#privacy-panel'); panel.hidden = false; $('[data-privacy-close]', panel)?.focus();
   }));
@@ -132,7 +120,12 @@
   };
   const modelLabel = () => state.kind === 'confirmar' ? 'Estrutura a definir' : state.threads === 'confirmar' ? labels.kind[state.kind] : `${labels.kind[state.kind]} · ${state.threads} ${state.threads === '1' ? 'fio' : 'fios'}`;
   const lengthLabel = () => state.length === 'unknown' ? 'A confirmar' : `${state.length === 'custom' ? state.customLength : state.length} cm — peça estendida`;
+  const priceText = () => {
+    const q = window.OgumPricing?.quote(state);
+    return q ? `Estimativa: ${q.total.toLocaleString('pt-BR', {style:'currency',currency:'BRL'})}${Number(state.quantity)>1 ? ' no total' : ' por peça'} · sem frete · padrão: 100 cm, vidro comum e firma simples quando não definidos` : 'Composição especial: valor a confirmar';
+  };
   const rows = () => [
+    ['Estimativa', priceText()],
     ['Tipo de peça', labels.kind[state.kind] || 'A confirmar'],
     ['Fios', state.threads === 'confirmar' ? 'A confirmar' : state.threads],
     ['Referência', state.entity || 'A confirmar'],
@@ -151,9 +144,11 @@
   };
   const message = () => {
     read();
-    return `Olá! Gostaria de conversar sobre uma encomenda no Ogum Funfun.\nPedido: ${state.requestId}\n\n${rows().map(([k,v]) => `${k}: ${v}`).join('\n')}\n\nOrçamento, materiais, prazo e frete a confirmar.\nOrigem registrada: ${origin.first.source} / ${origin.first.channel}.`;
+    const text = `Olá! Gostaria de conversar sobre uma encomenda no Ogum Funfun.\nPedido: ${state.requestId}\n\n${rows().map(([k,v]) => `${k}: ${v}`).join('\n')}\n\nOrçamento, materiais, prazo e frete a confirmar.`;
+    return attribution ? attribution.append(text, origin, location.pathname) : text;
   };
   const update = () => {
+    $$('[data-live-price]').forEach(el => el.textContent = priceText());
     $('#custom-length-wrap').hidden = state.length !== 'custom';
     $('#selected-colors').textContent = state.colors.length ? `Selecionadas: ${state.colors.join(', ')}. Até quatro cores.` : 'Você pode definir as cores depois.';
     $('#preview-title').textContent = modelLabel();

@@ -3,7 +3,6 @@
   const hero = document.querySelector('[data-hero]');
   if (!hero) return;
   const visual = hero.querySelector('.hero-visual');
-  const button = hero.querySelector('[data-hero-motion]');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const finePointer = matchMedia('(hover:hover) and (pointer:fine)');
   let paused = false, frame = 0, x = 0, y = 0, visible = true;
@@ -39,13 +38,9 @@
   const sync = () => {
     hero.classList.toggle('motion-on', !paused && !reduced.matches);
     hero.classList.toggle('motion-paused', paused || reduced.matches);
-    button.setAttribute('aria-pressed', String(paused));
-    button.textContent = paused ? 'Ativar movimento' : 'Pausar movimento';
-    button.hidden = reduced.matches;
     if (paused || reduced.matches) { cancelAnimationFrame(frame); frame = 0; reset(); }
     else schedule();
   };
-  button.addEventListener('click', () => { paused = !paused; sync(); });
   reduced.addEventListener('change', sync);
   document.addEventListener('visibilitychange', schedule);
   sync();
