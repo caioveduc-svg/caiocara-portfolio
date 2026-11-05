@@ -58,7 +58,7 @@
     const normalize = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
     const update = () => {
       const term = normalize(search?.value || ''); let total = 0;
-      cards.forEach(card => { const visible = (group === 'all' || card.dataset.group === group) && normalize(card.textContent).includes(term); card.hidden = !visible; if (visible) total++; });
+      cards.forEach(card => { const visible = (group === 'all' || (card.dataset.group || '').split('|').includes(group)) && normalize(card.textContent).includes(term); card.hidden = !visible; if (visible) total++; });
       if (status) status.textContent = total ? `${total} ${total === 1 ? 'resultado encontrado' : 'resultados encontrados'}.` : 'Nenhum resultado. Tente outro nome ou remova o filtro.';
     };
     $$('[data-filter]', root).forEach(button => button.addEventListener('click', () => {
@@ -67,6 +67,29 @@
       update();
     }));
     search?.addEventListener('input', update);
+    update();
+  });
+
+  $$('[data-reference-search]').forEach(root => {
+    const input = $('[data-reference-input]', root), status = $('[data-reference-status]', root);
+    const items = $$('[data-reference-item]', root);
+    const normalize = value => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+    const update = () => {
+      const term = normalize(input.value); let count = 0;
+      items.forEach(item => {
+        const visible = term ? (' ' + normalize(item.dataset.referenceName)).includes(' ' + term) : item.dataset.popular === 'true';
+        item.hidden = !visible; if (visible) count++;
+      });
+      status.textContent = !term ? 'Algumas referências para começar.' : count ? `${count} ${count === 1 ? 'coleção encontrada. Abra a página abaixo.' : 'coleções encontradas. Escolha uma abaixo.'}` : 'Ainda não encontrou? Tente outra grafia ou monte sua peça ao lado.';
+    };
+    input.addEventListener('input', update);
+    input.addEventListener('keydown', event => {
+      if (event.key !== 'Enter') return;
+      event.preventDefault();
+      const visible = items.filter(item => !item.hidden);
+      if (visible.length === 1) $('a', visible[0]).click();
+      else if (visible.length) $('a', visible[0]).focus();
+    });
     update();
   });
 
