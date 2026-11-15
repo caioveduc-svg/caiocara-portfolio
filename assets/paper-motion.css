@@ -1,0 +1,25 @@
+/* Paper stays in normal flow: no intercepted wheel/touch events or scroll locks. */
+body{overflow-x:clip}
+.paper-stage{position:relative;isolation:isolate}
+.paper-sheet{position:absolute;pointer-events:none;perspective:1000px;perspective-origin:50% 30%;transform-origin:50% 20%;z-index:2}
+.paper-fold{position:absolute;top:0;left:0;width:100%;transform-origin:center top;transform-style:preserve-3d}
+.paper-fold>.paper-fold{top:100%}
+.paper-face{position:absolute;inset:0 0 -1px;background-repeat:no-repeat;backface-visibility:visible}
+.paper-face::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,#fff6,transparent 28%,transparent 68%,#44301d88);opacity:var(--crease,0)}
+.hero .paper-stage{height:100%}
+.paper-stage>img{transform-origin:50% 52%}
+.paper-ball{position:absolute;inset:34% 35%;pointer-events:none;opacity:0;background:conic-gradient(from 30deg,#f6ead2,#b6a88f 12%,#fff8e8 22%,#c5b9a1 35%,#fdf4df 49%,#a79b87 65%,#f4e8cd 82%,#fff8e8);clip-path:polygon(18% 8%,47% 0,79% 12%,100% 43%,89% 77%,59% 100%,22% 88%,0 55%,6% 25%);z-index:2}
+.paper-ball::after{content:'';position:absolute;inset:0;background:linear-gradient(36deg,transparent 48%,#65584155 49%,#fff9 50%,transparent 51%),linear-gradient(125deg,transparent 45%,#65584155 46%,#fff9 47%,transparent 48%)}
+.paper-sticker{position:absolute;width:52px;height:52px;right:2%;top:4%;z-index:3;pointer-events:none;color:var(--ink);background:var(--paper);border:1px solid currentColor;box-shadow:3px 3px 0 #17151340;transform:rotate(9deg);padding:10px;border-radius:50%}
+.paper-sticker svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.paper-stage:nth-child(even) .paper-sticker{transform:rotate(-8deg)}
+.paper-active .paper-sticker{animation:sticker-turn 3.6s ease-in-out 1}
+@keyframes sticker-turn{0%,100%{transform:rotate(9deg) translateY(0)}35%{transform:rotate(-12deg) translateY(-5px)}70%{transform:rotate(15deg) translateY(-2px)}}
+.motion-toggle{position:relative;display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 16px;border:1px solid currentColor;background:transparent;font-size:12px;cursor:pointer}
+.motion-toggle:hover{background:var(--ink);color:var(--yellow)}
+.motion-toggle:active{transform:translateY(1px)}
+@media(max-width:700px){.hero{gap:32px}.hero .art{width:88%;margin:16px auto 0}.hero-copy .handnote{margin:24px 0 0 8px;transform:rotate(-3deg);line-height:1.5}.paper-sticker{width:44px;height:44px;padding:8px;right:1%;top:2%}.hero .paper-stage>img{height:auto}.motion-toggle{width:100%;margin-top:8px}}
+@media(prefers-reduced-motion:reduce){.paper-sticker{animation:none!important}.paper-ball{display:none}}
+html.motion-paused{scroll-behavior:auto}
+.motion-paused .paper-sticker{animation:none!important}
+.motion-paused .reveal{opacity:1!important;translate:none!important;transition:none!important}
