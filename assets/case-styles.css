@@ -2,3 +2,12 @@
 @media(max-width:700px){.education .web-scraps{min-height:440px}.portal-print{width:94%}.portal-print .paper-meta{font-size:8px}.results-intro{margin-top:64px;padding-top:32px}.results-intro h3{font-size:32px}.results-grid{grid-template-columns:1fr;gap:16px;margin-top:24px}.result-card{padding:24px}.result-card>strong{font-size:56px}.return-line{font-size:36px}.case-view .viewer-top{padding:16px}.case-view #viewer-content{padding:24px 20px 32px}.case-view .case-intro{font-size:18px}.case-metrics>div{padding:16px}.case-metrics dd{font-size:24px}.case-view #viewer-content figure:has(img[src*="feed"]) img{max-height:none}.clara-result>span{font-size:24px}}
 .spazio{border-top:1px solid #17151340;padding-block:112px;min-height:860px}.spazio .art{transform:rotate(2deg)}.spazio .art img{width:116%;max-width:116%;margin-left:-8%}.spazio-actions{display:flex;flex-direction:column;align-items:flex-start;gap:4px;margin-top:24px}.spazio-actions .text-link{margin-top:0;font-size:13px;padding:16px 0 12px}.spazio-photo{display:block;border:0;background:var(--paper);color:var(--ink);font-family:Newsreader,serif;font-size:18px;padding:12px 20px;transform:rotate(-5deg);box-shadow:3px 4px 0 #17151330;margin:24px 0 0 25%;min-height:48px;transition:transform .2s}.spazio-photo:hover{transform:rotate(0) translateY(-3px)}.spazio-photo:active{transform:scale(.98)}@media(max-width:700px){.spazio{padding-block:64px;min-height:0}.spazio .art img{width:100%;max-width:100%;margin:0}.spazio-photo{margin-left:8%;font-size:17px}.spazio-actions{gap:8px}}
 .art img{height:auto}
+.sports .originals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 16px;max-width:440px;margin-top:32px;padding:8px 4px 16px}
+.sports .original{width:100%;margin:0;align-self:start;min-height:44px}
+.sports .original img{height:auto;aspect-ratio:4/5;object-fit:contain;background:#eeeae3}
+.sports .original:nth-child(4){transform:rotate(3deg)}
+.sports .original:nth-child(5){transform:rotate(-5deg)}
+.sports .original:nth-child(6){transform:rotate(2deg)}
+.sports .original:hover{transform:rotate(0) translateY(-6px)}
+.sports .original:active{transform:scale(.98)}
+@media(max-width:700px){.sports .originals{gap:24px 12px;max-width:none}.sports .original span{font-size:9px;min-height:40px}}

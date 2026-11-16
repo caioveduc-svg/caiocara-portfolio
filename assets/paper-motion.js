@@ -27,7 +27,7 @@
   });
   const clamp = value => Math.min(1, Math.max(0, value));
   function prepare(item) {
-    if (item.sheet || item.done || paused) return;
+    if (item.sheet || item.done || paused || !item.img.complete || !item.img.naturalWidth) return;
     const {img, stage} = item;
     const width = img.offsetWidth, height = img.offsetHeight;
     if (!width || !height) return;
@@ -39,7 +39,7 @@
       const fold = document.createElement('div'); fold.className = 'paper-fold';
       fold.style.height = height/12+'px';
       const face = document.createElement('div'); face.className = 'paper-face';
-      face.style.backgroundImage = `url("${img.src}")`;
+      face.style.backgroundImage = `url("${img.currentSrc || img.src}")`;
       face.style.backgroundSize = `${width}px ${height}px`;
       face.style.backgroundPosition = `0 ${-i*height/12}px`;
       fold.append(face); parent.append(fold); parent = fold;
@@ -67,9 +67,6 @@
       fold.firstElementChild.style.setProperty('--crease', String((1-eased)*.65));
     });
   }
-  const toggle = document.createElement('button');
-  toggle.type = 'button'; toggle.className = 'motion-toggle';
-  document.querySelector('footer').append(toggle);
   let lastTime = 0;
   function render(time) {
     frame = 0;
@@ -100,19 +97,16 @@
   function setPaused(value) {
     paused = value;
     document.documentElement.classList.toggle('motion-paused', paused);
-    toggle.textContent = paused ? 'Ativar animações' : 'Pausar animações';
-    toggle.setAttribute('aria-pressed', String(paused));
     items.forEach(item => {
       if(paused) {finish(item); item.stage.classList.remove('paper-active');}
     });
     schedule();
   }
-  items.forEach(item => observer.observe(item.stage));
+  items.forEach(item => {observer.observe(item.stage);item.img.addEventListener('load',schedule,{once:true});});
   addEventListener('scroll', schedule, {passive:true});
   addEventListener('resize', () => {active.forEach(finish); schedule();}, {passive:true});
   document.addEventListener('visibilitychange', schedule);
   document.querySelector('#viewer')?.addEventListener('close', schedule);
-  toggle.addEventListener('click', () => setPaused(!paused));
   preference.addEventListener('change', e => setPaused(e.matches));
   setPaused(paused);
 })();

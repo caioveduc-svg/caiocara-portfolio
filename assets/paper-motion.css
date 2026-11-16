@@ -15,10 +15,10 @@ body{overflow-x:clip}
 .paper-stage:nth-child(even) .paper-sticker{transform:rotate(-8deg)}
 .paper-active .paper-sticker{animation:sticker-turn 3.6s ease-in-out 1}
 @keyframes sticker-turn{0%,100%{transform:rotate(9deg) translateY(0)}35%{transform:rotate(-12deg) translateY(-5px)}70%{transform:rotate(15deg) translateY(-2px)}}
-.motion-toggle{position:relative;display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 16px;border:1px solid currentColor;background:transparent;font-size:12px;cursor:pointer}
-.motion-toggle:hover{background:var(--ink);color:var(--yellow)}
-.motion-toggle:active{transform:translateY(1px)}
-@media(max-width:700px){.hero{gap:32px}.hero .art{width:88%;margin:16px auto 0}.hero-copy .handnote{margin:24px 0 0 8px;transform:rotate(-3deg);line-height:1.5}.paper-sticker{width:44px;height:44px;padding:8px;right:1%;top:2%}.hero .paper-stage>img{height:auto}.motion-toggle{width:100%;margin-top:8px}}
+
+
+
+@media(max-width:700px){.hero{gap:32px}.hero .art{width:88%;margin:16px auto 0}.hero-copy .handnote{margin:24px 0 0 8px;transform:rotate(-3deg);line-height:1.5}.paper-sticker{width:44px;height:44px;padding:8px;right:1%;top:2%}.hero .paper-stage>img{height:auto}}
 @media(prefers-reduced-motion:reduce){.paper-sticker{animation:none!important}.paper-ball{display:none}}
 html.motion-paused{scroll-behavior:auto}
 .motion-paused .paper-sticker{animation:none!important}
