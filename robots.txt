@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://caiocaradesigner.com.br/sitemap.xml
